@@ -22,6 +22,15 @@ export const gitOauthToken = code => post({
         code,
     }
 });
+export const postOauthlogin = values => post({
+    url: `/lead-admin-api/auth/login`,
+    data: {
+        username: values.userName,
+        password: values.password,
+        captcha:''
+
+    }
+});
 // {headers: {Accept: 'application/json'}}
 export const gitOauthInfo = access_token => get({ url: `${config.GIT_USER}access_token=${access_token}` });
 

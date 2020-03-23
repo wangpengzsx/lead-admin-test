@@ -8,6 +8,9 @@ import AllComponents from '../components';
 import routesConfig from './config';
 import queryString from 'query-string';
 
+
+
+
 export default class CRouter extends Component {
     requireAuth = (permission, component) => {
         const { auth } = this.props;
@@ -16,11 +19,11 @@ export default class CRouter extends Component {
         if (!permissions || !permissions.includes(permission)) return <Redirect to={'404'} />;
         return component;
     };
-    requireLogin = (component, permission) => {
+    requireLogin = (component, permission,merge) => {
         const { auth } = this.props;
         const { permissions } = auth.data;
         if (process.env.NODE_ENV === 'production' && !permissions) { // 线上环境判断是否登录
-            return <Redirect to={'/login'} />;
+            return <Redirect to={'/login'} {...merge}/>;
         }
         return permission ? this.requireAuth(permission, component) : component;
     };
@@ -49,6 +52,7 @@ export default class CRouter extends Component {
                                             props.match.params = { ...params };
                                             const merge = { ...props, query: queryParams ? queryString.parse(queryParams[0]) : {} };
                                             // 重新包装组件
+                                            console.log(merge)
                                             const wrappedComponent = (
                                                 <DocumentTitle title={r.title}>
                                                     <Component {...merge} />
@@ -56,7 +60,7 @@ export default class CRouter extends Component {
                                             )
                                             return r.login
                                                 ? wrappedComponent
-                                                : this.requireLogin(wrappedComponent, r.auth)
+                                                : this.requireLogin(wrappedComponent, r.auth,merge)
                                         }}
                                     />
                                 )

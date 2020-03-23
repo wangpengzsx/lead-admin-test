@@ -11,7 +11,6 @@ const { Sider } = Layout;
 
 class SiderCustom extends Component {
     static getDerivedStateFromProps (props, state) {
-        console.log(state);
         if (props.collapsed !== state.collapsed) {
             const state1 = SiderCustom.setMenuOpen(props);
             const state2 = SiderCustom.onCollapse(props.collapsed);
@@ -57,7 +56,6 @@ class SiderCustom extends Component {
         popoverHide && popoverHide();
     };
     openMenu = v => {
-        console.log(v[v.length - 1])
         this.setState({
             openKey: v[v.length - 1],
             firstHide: false,
