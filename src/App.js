@@ -56,4 +56,4 @@ class App extends Component {
     }
 }
 
-export default connectAlita(['auth', 'responsive'])(App);
+export default connectAlita(['auth', 'responsive',"aaa","count","count1"])(App);

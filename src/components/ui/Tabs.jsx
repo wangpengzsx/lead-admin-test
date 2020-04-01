@@ -58,18 +58,14 @@ class TabsCustom extends Component {
         }
         this.setState({ panes, activeKey });
     };
-    ceshi1=()=>{
-        const { setAlitaState ,ceshi = { data: {} } } = this.props;
-        setAlitaState({ stateName: 'auth', data: ceshi.data++ });
-    }
+
     render() {
         const { mode } = this.state;
-        const {  ceshi = { data: {} } } = this.props;
-        console.log(ceshi);
+
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom first="UI" second="标签页" />
-                <Button onClick={this.ceshi1}>{ceshi.data&&'ceshi'}</Button>
+                <BreadcrumbCustom first="UI" second="标签页" history={this.props.history}/>
+
                 <Row gutter={16}>
                     <Col className="gutter-row" md={12}>
                         <div className="gutter-box">
@@ -161,4 +157,4 @@ class TabsCustom extends Component {
     }
 }
 
-export default connectAlita(['ceshi'])(TabsCustom);
+export default connectAlita()(TabsCustom);

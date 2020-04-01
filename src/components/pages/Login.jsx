@@ -18,7 +18,7 @@ class Login extends React.Component {
     }
 
     componentDidUpdate(prevProps) { // React 16.3+弃用componentWillReceiveProps
-        const {auth: nextAuth = {}} = this.props;
+        const {auth: nextAuth = {}} = this.props.alitaState;
         if (nextAuth.data && nextAuth.data.uid) { // 判断是否登陆
             localStorage.setItem('user', JSON.stringify(nextAuth.data));
             this.props.history.push({pathname: '/'});
@@ -31,8 +31,8 @@ class Login extends React.Component {
             if (!err) {
                 const {setAlitaState} = this.props;
                 postOauthlogin(values).then(res => {
-                    console.log(res.data)
                     setAlitaState({stateName: 'auth', data: {uid: res.data.id}})
+                    setAlitaState({stateName: 'aaa', data: {uid: res.data}})
 
                 })
             }
@@ -44,6 +44,10 @@ class Login extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
+        console.log(this.props.alitaState);
+        const {count = {},count1={}} = this.props.alitaState;
+        const {data: countNum = 0} = count;
+        const {data: countNum1 = 0} = count1;
         return (
             <div className="login">
                 <div className="login-form">
@@ -51,6 +55,9 @@ class Login extends React.Component {
                         <span>React Admin</span>
                         <PwaInstaller/>
                     </div>
+                    <button onClick={() => this.props.setAlitaState({ stateName: 'count', data: countNum + 1 })}>{countNum} + 1</button>
+                    <button onClick={() => this.props.setAlitaState({ stateName: 'count', data: countNum - 1 })}>{countNum}- 1</button>
+                    <button onClick={() => this.props.setAlitaState({ stateName: 'count1', data: countNum1 + 1 })}>{countNum1}- 1</button>
                     <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
                         <FormItem>
                             {getFieldDecorator('userName', {
@@ -92,4 +99,4 @@ class Login extends React.Component {
     }
 }
 
-export default connectAlita(['auth'])(Form.create()(Login));
+export default connectAlita()(Form.create()(Login));

@@ -45,6 +45,7 @@ export default ({ menus, ...props }) => {
         return result;
     };
     const onDragEnd = (result) => {
+        console.log(result);
         // dropped outside the list
         if(!result.destination) {
            return;

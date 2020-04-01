@@ -4,15 +4,16 @@
 import axios from 'axios';
 import { get, post } from './tools';
 import * as config from './config';
+import home from './home'
 
-export const getBbcNews = () => get({ url: config.NEWS_BBC });
+ const getBbcNews = () => get({ url: config.NEWS_BBC });
 
-export const npmDependencies = () => axios.get('./npm.json').then(res => res.data).catch(err => console.log(err));
+ const npmDependencies = () => axios.get('./npm.json').then(res => res.data).catch(err => console.log(err));
 
-export const weibo = () => axios.get('./weibo.json').then(res => res.data).catch(err => console.log(err));
+ const weibo = () => axios.get('./weibo.json').then(res => res.data).catch(err => console.log(err));
 
-export const gitOauthLogin = () => get({ url: `${config.GIT_OAUTH}/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin` });
-export const gitOauthToken = code => post({
+ const gitOauthLogin = () => get({ url: `${config.GIT_OAUTH}/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin` });
+ const gitOauthToken = code => post({
     url: `https://cors-anywhere.herokuapp.com/${config.GIT_OAUTH}/access_token`,
     data: {
         client_id: '792cdcd244e98dcd2dee',
@@ -22,7 +23,7 @@ export const gitOauthToken = code => post({
         code,
     }
 });
-export const postOauthlogin = values => post({
+ const postOauthlogin = values => post({
     url: `/lead-admin-api/auth/login`,
     data: {
         username: values.userName,
@@ -31,11 +32,18 @@ export const postOauthlogin = values => post({
 
     }
 });
+ const getNoGroupAppList=home.getNoGroupAppList
 // {headers: {Accept: 'application/json'}}
-export const gitOauthInfo = access_token => get({ url: `${config.GIT_USER}access_token=${access_token}` });
+ const gitOauthInfo = access_token => get({ url: `${config.GIT_USER}access_token=${access_token}` });
+
+
 
 // easy-mock数据交互
 // 管理员权限获取
-export const admin1 = () => get({ url: config.MOCK_AUTH_ADMIN });
+ const admin1 = () => get({ url: config.MOCK_AUTH_ADMIN });
 // 访问权限获取
-export const guest = () => get({ url: config.MOCK_AUTH_VISITOR });
+ const guest = () => get({ url: config.MOCK_AUTH_VISITOR });
+
+export {
+    getNoGroupAppList,getBbcNews,npmDependencies,weibo,gitOauthLogin,gitOauthToken,postOauthlogin,gitOauthInfo,admin1,guest
+}

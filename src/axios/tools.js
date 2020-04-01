@@ -12,11 +12,25 @@ import { message } from 'antd';
  * @param headers   接口所需header配置
  */
 export const get = ({url, msg = '接口异常', headers}) =>
-{console.log('执行了这个接口');
-    axios.get(url, headers).then(res => res.data).catch(err => {
-       console.log(err);
-       message.warn(msg);
-    })};
+
+     new Promise(function(resolve, reject){
+        axios.get(url, headers).then(res => {
+            console.log(res)
+            resolve(res)
+        }).catch(err => {
+            if(err.response) {
+                if(err.response.status===404){
+                    window.location.href='#/login'
+                }
+            }else if(err.request) {
+                console.log(err.request);
+            }else{
+                console.log('err', err.message);
+            }
+            message.warn(msg);
+            reject(err)
+        })
+    })
 
 /**
  * 公用post请求

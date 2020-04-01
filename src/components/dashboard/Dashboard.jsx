@@ -2,20 +2,126 @@
  * Created by hao.cheng on 2017/5/3.
  */
 import React from 'react';
-import { Row, Col, Card, Timeline, Icon } from 'antd';
+import { Row, Col, Card, Timeline, Icon ,Radio,DatePicker} from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import EchartsViews from './EchartsViews';
 import EchartsProjects from './EchartsProjects';
 import b1 from '../../style/imgs/b1.jpg';
+import {connectAlita} from 'redux-alita';
+import SearchSelect from './moudle/SearchSelect';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+const { RangePicker } = DatePicker;
+
+function disabledDate(current) {
+    return  current&&current > moment().endOf('day')
+}
+const citys=[
+    {
+        name: '所有渠道',
+        value: ''
+    },
+    {
+        name: '打底',
+        value: 'FALLBACK_DSP'
+    },
+    {
+        name: 'apidsp',
+        value: 'API_DSP'
+    },
+    {
+        name: '推广',
+        value: 'POPU_PLAN'
+    }
+]
 
 
 class Dashboard extends React.Component {
+    constructor(){
+        super()
+        this.state={
+            whenTime:1,
+            startValue: moment().subtract(7, 'days'),
+            endValue: moment().subtract(1, 'days'),
+        }
+    }
+    componentWillMount(){
+        this.props.setAlitaState({ funcName: 'getNoGroupAppList'})
+    }
+    mediaChange(e){
+        console.log(e);
+    }
+    onChange = (field, value) => {
+        this.setState({
+            [field]: value,
+        });
+    }
+    onBtnChange(e){
+        this.setState({whenTime:e.target.value})
+
+    }
+    setTime(start,end){
+        this.onChange('startValue', moment().subtract(start, 'days'));
+        this.onChange('endValue', moment().subtract(end, 'days'));
+    }
+
     render() {
+        const { data = {} } = this.props.alitaState.getNoGroupAppList || {};
+        console.log(data);
         return (
             <div className="gutter-example button-demo">
                 <BreadcrumbCustom />
                 <Row gutter={10}>
-                    <Col className="gutter-row" md={4}>
+                    <Col className="gutter-row" md={3}>
+                        <SearchSelect
+                            style={{width:'100%'}}
+                            placeholder="请选择媒体"
+                            onChange={(e)=>this.mediaChange(e)}
+                            optionList={data.data} />
+                    </Col>
+                    <Col className="gutter-row" md={3}>
+                        <SearchSelect
+                            style={{width:'100%'}}
+                            placeholder="请选择渠道"
+                            onChange={(e)=>this.mediaChange(e)}
+                            optionList={citys} />
+                    </Col>
+                    <Col md={16} style={{float:'right',display:'flex',justifyContent:'flex-end'}}>
+                        <Radio.Group onChange={(e)=>this.onBtnChange(e)} style={{marginRight:10}}>
+                            <Radio.Button value={1}>昨天</Radio.Button>
+                            <Radio.Button value={7}>过去7天</Radio.Button>
+                            <Radio.Button value={30}>过去30天</Radio.Button>
+                            <Radio.Button value={0}>自定义</Radio.Button>
+                        </Radio.Group>
+                        {this.state.whenTime==0?(
+                            <RangePicker
+                                style={{width:300}}
+                                locale={locale}
+                                disabledDate={disabledDate}
+                                value={[this.state.startValue,this.state.endValue]}
+                                onChange={(a)=>this.onRangeChange(a)} />
+                        ):null}
+                    </Col>
+                </Row>
+                <Row gutter={10}>
+                    <Col className="gutter-row" md={24}>
+                        <div className="gutter-box">
+                            <Card bordered={false}>
+                                <div className="clear y-center">
+                                    <div className="clear">
+                                        <h2>收藏</h2>
+                                        <div className="text-muted">301</div>
+
+                                    </div>
+                                </div>
+                            </Card>
+                        </div>
+                    </Col>
+                </Row>
+
+                <Row gutter={10}>
+                    <Col className="gutter-row" md={8}>
                         <div className="gutter-box">
                             <Card bordered={false}>
                                 <div className="clear y-center">
@@ -43,7 +149,7 @@ class Dashboard extends React.Component {
                             </Card>
                         </div>
                     </Col>
-                    <Col className="gutter-row" md={4}>
+                    <Col className="gutter-row" md={8}>
                         <div className="gutter-box">
                             <Card bordered={false}>
                                 <div className="clear y-center">
@@ -71,7 +177,7 @@ class Dashboard extends React.Component {
                             </Card>
                         </div>
                     </Col>
-                    <Col className="gutter-row" md={16}>
+                    <Col className="gutter-row" md={8}>
                         <div className="gutter-box">
                             <Card bordered={false} className={'no-padding'}>
                                 <EchartsProjects />
@@ -171,4 +277,4 @@ class Dashboard extends React.Component {
     }
 }
 
-export default Dashboard;
+export default connectAlita()(Dashboard);
